@@ -3,6 +3,7 @@ import {useState} from "react";
 import CurrencyDropdown from "./dropdown";
 import {HiArrowsRightLeft} from "react-icons/hi2";
 
+
 const CurrencyConverter = () => {
   const [currencies, setCurrencies] = useState([]);
   const [amount, setAmount] = useState(1);
@@ -10,10 +11,7 @@ const CurrencyConverter = () => {
   const [toCurrency, setToCurrency] = useState("INR");
   const [convertedAmount, setConvertedAmount] = useState(null);
   const [converting, setConverting] = useState(false);
-  const [favorites, setFavorites] = useState(
-    JSON.parse(localStorage.getItem("favorites")) || ["INR", "EUR"]
-  );
-
+  
   // Currencies -> https://api.frankfurter.app/currencies
   const fetchCurrencies = async () => {
     try {
@@ -50,19 +48,6 @@ const CurrencyConverter = () => {
     }
   };
 
-  const handleFavorite = (currency) => {
-    let updatedFavorites = [...favorites];
-
-    if (favorites.includes(currency)) {
-      updatedFavorites = updatedFavorites.filter((fav) => fav !== currency);
-    } else {
-      updatedFavorites.push(currency);
-    }
-
-    setFavorites(updatedFavorites);
-    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-  };
-
   const swapCurrencies = () => {
     setFromCurrency(toCurrency);
     setToCurrency(fromCurrency);
@@ -70,18 +55,16 @@ const CurrencyConverter = () => {
 
   return (
     <div className="max-w-xl mx-auto my-10 p-5 bg-white rounded-lg shadow-md">
-      <h2 className="mb-5 text-2xl font-semibold text-gray-700">
+      <h2 className="mb-5 text-2xl font-semibold text-gray-700 flex justify-center ">
         Currency Converter
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
         <CurrencyDropdown
-          favorites={favorites}
           currencies={currencies}
           title="From:"
           currency={fromCurrency}
           setCurrency={setFromCurrency}
-          handleFavorite={handleFavorite}
         />
         {/* swap currency button */}
         <div className="flex justify-center -mb-5 sm:mb-0">
@@ -93,12 +76,10 @@ const CurrencyConverter = () => {
           </button>
         </div>
         <CurrencyDropdown
-          favorites={favorites}
           currencies={currencies}
           currency={toCurrency}
           setCurrency={setToCurrency}
           title="To:"
-          handleFavorite={handleFavorite}
         />
       </div>
 
@@ -120,7 +101,7 @@ const CurrencyConverter = () => {
       <div className="flex justify-end mt-6">
         <button
           onClick={convertCurrency}
-          className={`px-5 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
+          className={`px-5 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none
           ${converting ? "animate-pulse" : ""}`}
         >
           Convert
@@ -128,7 +109,7 @@ const CurrencyConverter = () => {
       </div>
 
       {convertedAmount && (
-        <div className="mt-4 text-lg font-medium text-right text-green-600">
+        <div className="mt-4 text-lg font-medium text-right text-green-600 flex justify-center">
           Converted Amount: {convertedAmount}
         </div>
       )}
